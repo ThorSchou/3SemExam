@@ -1,0 +1,79 @@
+# --- Java / Build ---
+*.class
+*.log
+*.ctxt
+hs_err_pid*
+replay_pid*
+
+# --- Maven ---
+target/
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+# Maven wrapper: keep these committed
+#! .mvn/
+#! mvnw
+#! mvnw.cmd
+
+# --- IntelliJ IDEA / JetBrains ---
+.idea/
+*.iml
+*.iws
+out/
+# Keep shared run configs if you use them:
+!.idea/runConfigurations/
+# But ignore machine-specific stuff:
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf/
+.idea/**/dataSources/
+.idea/**/dataSources.local.xml
+.idea/**/httpRequests/
+
+# --- VS Code (if present) ---
+.vscode/
+
+# --- Logs / temp ---
+logs/
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# --- Coverage / reports ---
+jacoco.exec
+target/site/jacoco/
+coverage/
+.exec
+*.ec
+*.lcov
+
+# --- Testcontainers / Docker ---
+.testcontainers.properties
+docker-compose.override.yml
+.env
+*.env
+**/.env.*
+
+# --- Databases / scratch data ---
+*.db
+*.h2.db
+*.mv.db
+*.sqlite
+data/
+db-data/
+
+# --- Local config / secrets (provide example files in repo) ---
+config.properties
+secrets.properties
+application-local.yml
+application-local.properties
+*.keystore
+*.p12
+
+# --- Node bits (if you add a small frontend) ---
+node_modules/
+dist/
