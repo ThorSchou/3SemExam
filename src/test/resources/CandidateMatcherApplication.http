@@ -1,0 +1,163 @@
+@url = http://localhost:7070/api
+@json = application/json
+
+### Healthcheck
+GET {{url}}/auth/healthcheck
+Accept: {{json}}
+
+### Routes overview (server)
+GET {{url}}/routes
+
+### Create a new user (gets USER role)
+POST {{url}}/auth/register
+Content-Type: {{json}}
+Accept: {{json}}
+
+{
+  "username": "tester",
+  "password": "pw123456"
+}
+
+### Login (capture token -> USER only for now)
+POST {{url}}/auth/login
+Content-Type: {{json}}
+Accept: {{json}}
+
+{
+  "username": "tester",
+  "password": "pw123456"
+}
+
+> {%
+    client.global.set("jwt_token", response.body.token);
+    console.log("JWT (USER):", client.global.get("jwt_token"));
+%}
+
+### USER protected demo (should be 200)
+GET {{url}}/protected/user_demo
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+### ADMIN protected demo (should be 401/403 with USER token)
+GET {{url}}/protected/admin_demo
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+### Add admin role to current user (requires any valid token)
+POST {{url}}/auth/user/addrole
+Content-Type: {{json}}
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+{
+  "role": "admin"
+}
+
+### Login again (capture NEW token -> now includes admin)
+POST {{url}}/auth/login
+Content-Type: {{json}}
+Accept: {{json}}
+
+{
+  "username": "tester",
+  "password": "pw123456"
+}
+
+> {%
+    client.global.set("jwt_token", response.body.token);
+    console.log("JWT (ADMIN):", client.global.get("jwt_token"));
+%}
+
+### ADMIN protected demo (should be 200 now)
+GET {{url}}/protected/admin_demo
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+##################################################
+### Skills — list
+GET {{url}}/skills
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+### Skills — create (ADMIN)
+POST {{url}}/skills
+Content-Type: {{json}}
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+{
+  "name": "Kubernetes",
+  "slug": "kubernetes",
+  "category": "DEVOPS",
+  "description": "Container orchestration platform for scalable deployments."
+}
+
+> {%
+    client.global.set("skill_id", response.body.id);
+    console.log("Skill ID:", client.global.get("skill_id"));
+%}
+
+##################################################
+### Candidates — list
+GET {{url}}/candidates
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+### Candidates — create (ADMIN)
+POST {{url}}/candidates
+Content-Type: {{json}}
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+{
+  "name": "HTTP Candidate",
+  "phone": "+4599999999",
+  "education": "BSc Software Development"
+}
+
+> {%
+    client.global.set("candidate_id", response.body.id);
+    console.log("Candidate ID:", client.global.get("candidate_id"));
+%}
+
+### Candidates — get by id (includes enriched skills if implemented)
+GET {{url}}/candidates/{{candidate_id}}
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+### Candidates — update (ADMIN)
+PUT {{url}}/candidates/{{candidate_id}}
+Content-Type: {{json}}
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+{
+  "name": "HTTP Candidate - Updated",
+  "phone": "+4512345678",
+  "education": "MSc Computer Science"
+}
+
+### Candidates — link skill (ADMIN)
+PUT {{url}}/candidates/{{candidate_id}}/skills/{{skill_id}}
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+### Candidates — filter by skill category
+GET {{url}}/candidates?category=PROG_LANG
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+### Reports — top candidate by average popularity
+GET {{url}}/reports/candidates/top-by-popularity
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+### Candidates — delete (ADMIN)
+DELETE {{url}}/candidates/{{candidate_id}}
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}
+
+### Negative — bad category filter
+GET {{url}}/candidates?category=UNKNOWN
+Accept: {{json}}
+Authorization: Bearer {{jwt_token}}

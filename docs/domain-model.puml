@@ -1,0 +1,37 @@
+@startuml
+title Domain model - Candidate Matcher
+left to right direction
+
+class Candidate {
+  +Long id
+  +String name
+  +String phone
+  +String education
+}
+
+class Skill {
+  +Long id
+  +String name
+  +String slug
+  +SkillCategory category
+  +String description
+}
+
+class CandidateSkill {
+  +Long id
+}
+
+enum SkillCategory {
+  PROG_LANG
+  DB
+  DEVOPS
+  FRONTEND
+  TESTING
+  DATA
+  FRAMEWORK
+}
+
+Candidate "1" o-- "0..*" CandidateSkill : candidate
+Skill     "1" o-- "0..*" CandidateSkill : skill
+
+@enduml

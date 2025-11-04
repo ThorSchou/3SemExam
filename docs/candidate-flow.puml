@@ -1,0 +1,30 @@
+@startuml
+title Sequence – Create candidate and assign skill
+
+actor User
+participant "SecurityController" as Sec
+participant "CandidateController" as CandCtrl
+participant "SkillController" as SkillCtrl
+database "PostgreSQL" as Db
+
+User -> Sec : POST /auth/login
+Sec -> Db : load User, Roles
+Sec <-- Db
+User <-- Sec : JWT
+
+User -> CandCtrl : POST /candidates (JWT)
+CandCtrl -> Db : insert Candidate
+CandCtrl <-- Db : new id
+User <-- CandCtrl : CandidateDTO
+
+User -> SkillCtrl : POST /skills (JWT)
+SkillCtrl -> Db : insert Skill
+SkillCtrl <-- Db : new id
+User <-- SkillCtrl : SkillDTO
+
+User -> CandCtrl : PUT /candidates/{id}/skills/{skillId} (JWT)
+CandCtrl -> Db : insert CandidateSkill
+CandCtrl <-- Db
+User <-- CandCtrl : CandidateDTO (with skills)
+
+@enduml
